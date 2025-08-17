@@ -150,7 +150,9 @@ async def create_time_entry(
     duration: Annotated[
         Optional[int], Field(description="Duration in seconds (omit for running entry)")
     ] = None,
-    tags: Annotated[Optional[List[str]], Field(description="Tags to assign")] = None,
+    tags: Annotated[
+        Optional[List[str]], Field(description="Name of tags to assign")
+    ] = None,
 ) -> str:
     if not _is_valid_iso_datetime(start):
         raise ValueError("start is not a valid ISO 8601 datetime")
@@ -163,6 +165,7 @@ async def create_time_entry(
         "start": start,
         "duration": duration,
         "tags": tags,
+        "created_with": "mcp-server-toggl",
     }
     # Remove None values to avoid overriding server defaults
     body = {k: v for k, v in body.items() if v is not None}
@@ -193,6 +196,7 @@ async def update_time_entry(
         "start": start,
         "duration": duration,
         "tags": tags,
+        "created_with": "mcp-server-toggl",
     }
     body = {k: v for k, v in body.items() if v is not None}
     data = await _execute_api_request(url, "PUT", body=body)
