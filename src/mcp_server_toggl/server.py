@@ -142,7 +142,6 @@ async def create_time_entry(
         Optional[str], Field(description="Description of the time entry")
     ] = None,
     projectId: Annotated[Optional[int], Field(description="Project ID")] = None,
-    taskId: Annotated[Optional[int], Field(description="Task ID")] = None,
     billable: Annotated[
         Optional[bool],
         Field(description="Whether the time entry is billable", default=True),
@@ -160,12 +159,12 @@ async def create_time_entry(
     body = {
         "description": description,
         "project_id": projectId,
-        "task_id": taskId,
         "billable": billable,
         "start": start,
         "duration": duration,
         "tags": tags,
         "created_with": "mcp-server-toggl",
+        "workspace_id": workspaceId,
     }
     # Remove None values to avoid overriding server defaults
     body = {k: v for k, v in body.items() if v is not None}
@@ -197,6 +196,7 @@ async def update_time_entry(
         "duration": duration,
         "tags": tags,
         "created_with": "mcp-server-toggl",
+        "workspace_id": workspaceId,
     }
     body = {k: v for k, v in body.items() if v is not None}
     data = await _execute_api_request(url, "PUT", body=body)
